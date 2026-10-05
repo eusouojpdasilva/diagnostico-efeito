@@ -77,18 +77,6 @@
     const stepNames = ['Vendas', 'Origem dos clientes', 'Gargalo', 'Contato'];
     const answers = {};
     let currentStep = 1;
-    let diagnosticStarted = false;
-
-    const trackEvent = name => {
-      if (typeof window.fbq === 'function') window.fbq('trackCustom', name);
-      window.dispatchEvent(new CustomEvent('efeito-reservas:analytics', { detail: { event: name } }));
-    };
-    const startDiagnostic = () => {
-      if (diagnosticStarted) return;
-      diagnosticStarted = true;
-      trackEvent('diagnostico_iniciado');
-      trackEvent('diagnostico_etapa_1');
-    };
     const setStep = (next, shouldScroll = true) => {
       currentStep = Math.max(1, Math.min(4, next));
       steps.forEach((step, index) => {
@@ -103,7 +91,6 @@
       backButton.hidden = currentStep === 1;
       stepHint.textContent = currentStep < 4 ? 'Selecione uma opção para continuar' : 'Suas respostas serão abertas no WhatsApp';
       formError.textContent = '';
-      if (diagnosticStarted && currentStep <= 3 && currentStep > 1) trackEvent('diagnostico_etapa_' + currentStep);
       if (shouldScroll) section.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
       const nextFocus = steps[currentStep - 1].querySelector('input[type="radio"]:checked') || steps[currentStep - 1].querySelector('input,button');
       window.setTimeout(() => nextFocus?.focus({ preventScroll: true }), reducedMotion ? 0 : 220);
@@ -113,7 +100,6 @@
       input.addEventListener('change', () => {
         const key = input.name;
         answers[key] = input.value;
-        startDiagnostic();
         window.setTimeout(() => setStep(currentStep + 1), 140);
       });
     });
@@ -155,12 +141,11 @@
       document.querySelector('#phone-error').textContent = '';
     });
 
+    let leadTracked = false;
     const sendWhatsApp = () => {
-      trackEvent('diagnostico_whatsapp_clicado');
       const popup = window.open(fallback.href, '_blank');
       if (popup) popup.opener = null;
     };
-    fallback.addEventListener('click', () => trackEvent('diagnostico_whatsapp_clicado'));
 
     diagnostic.addEventListener('submit', event => {
       event.preventDefault();
@@ -187,6 +172,10 @@
         return;
       }
       phoneField.removeAttribute('aria-invalid');
+      if (!leadTracked && typeof window.fbq === 'function') {
+        window.fbq('track', 'Lead');
+        leadTracked = true;
+      }
       const message = 'Olá, JP. Quero solicitar o Diagnóstico Efeito Reservas.\n\n' +
         'Meu nome: ' + name + '\nMeu WhatsApp: ' + phoneField.value + '\n\n' +
         'Como estão minhas vendas hoje:\n' + answers.momento_vendas + '\n\n' +
@@ -200,14 +189,10 @@
       diagnostic.querySelector('.diagnostic-progress').hidden = true;
       diagnostic.querySelector('.form-error').hidden = true;
       confirmation.hidden = false;
-      trackEvent('diagnostico_formulario_concluido');
       confirmation.focus({ preventScroll: true });
       sendWhatsApp();
     });
 
-    document.querySelectorAll('a[href="#diagnostico-form"]').forEach(link => {
-      link.addEventListener('click', startDiagnostic, { once: true });
-    });
   }
   document.querySelector('.privacy-link').addEventListener('click', event => {
     event.preventDefault();
