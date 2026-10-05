@@ -198,3 +198,17 @@ body{font-family:var(--sans);font-size:16px;line-height:1.7;color:#171813}
  .cta-note{font-size:13px;line-height:1.6}
  .privacy-note{font-size:13px!important;line-height:1.65}
 }
+
+/* Stronger section labels and a quiet privacy link after removing the footer band */
+.eyebrow{font-size:12px;font-weight:700;line-height:1.5;letter-spacing:.14em;color:#765411}
+.hero .eyebrow{font-size:12px;color:#e0c66d}
+.hero-exclusive{font-weight:600;color:#e2ded3}
+.section-heading .eyebrow,.story-copy .eyebrow,.area-intro .eyebrow,.structure .eyebrow,.intro-aside .eyebrow{color:#765411}
+.clarity .eyebrow,.final-cta .eyebrow{color:#efd783}
+.cta-privacy{display:inline-block;margin-top:10px;color:#e1ded4;font-size:13px;line-height:1.5;text-decoration:underline;text-underline-offset:3px}
+.cta-privacy:hover{color:#fff}
+@media(max-width:680px){
+ .eyebrow,.hero .eyebrow,.section-heading .eyebrow,.story-copy .eyebrow,.area-intro .eyebrow,.structure .eyebrow,.intro-aside .eyebrow,.clarity .eyebrow,.final-cta .eyebrow{font-size:12px;line-height:1.5;letter-spacing:.1em}
+ .hero-exclusive{font-size:11px}
+ .cta-privacy{font-size:13px}
+}
