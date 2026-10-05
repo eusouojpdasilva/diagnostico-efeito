@@ -282,3 +282,35 @@ body{font-family:var(--sans);font-size:16px;line-height:1.7;color:#171813}
  .system-columns>div{overflow-wrap:anywhere}
  .story-video video,.hero-video{max-width:100%}
 }
+
+
+/* Condensed conversion path */
+.recognition.mockup-stories{padding-top:92px;padding-bottom:94px}
+.recognition-row{grid-template-columns:.86fr 1.14fr;gap:clamp(42px,7vw,96px);padding-bottom:0;margin-bottom:0;border-bottom:0}
+.recognition-copy{max-width:460px}
+.recognition-copy h3{max-width:430px}
+.recognition-copy>p{margin:0 0 12px}
+.recognition-points{list-style:none;margin:18px 0;padding:0;border-top:1px solid #dfdcd3}
+.recognition-points li{position:relative;padding:10px 4px 10px 18px;border-bottom:1px solid #dfdcd3;font-size:13px;line-height:1.55;color:#393a34}
+.recognition-points li::before{content:"";position:absolute;left:1px;top:18px;width:5px;height:5px;border-radius:50%;background:#c9a84c}
+.recognition-copy .recognition-close{margin-top:20px;font-size:13px;line-height:1.7;color:#45463f}
+.recognition-media{width:100%}
+.analysis-followup{max-width:740px;margin:32px auto 0;padding-left:44px}
+.analysis-followup p{margin:0 0 20px;color:#56564f;font-size:15px;line-height:1.75}
+.analysis-followup .button{display:inline-flex;width:auto;min-height:54px;align-items:center}
+.areas.section-pad{padding-top:94px;padding-bottom:104px}
+@media(max-width:680px){
+ .recognition.mockup-stories{padding-top:64px;padding-bottom:68px}
+ .recognition-row{gap:25px}
+ .recognition-copy{max-width:100%}
+ .recognition-copy h3{max-width:100%}
+ .recognition-points{margin:15px 0}
+ .recognition-points li{font-size:14px;padding:10px 0 10px 18px}
+ .recognition-copy .recognition-close{font-size:14px;line-height:1.65}
+ .analysis-followup{margin-top:24px;padding-left:0}
+ .analysis-followup p{font-size:15px;line-height:1.7}
+ .analysis-followup .button{width:100%;justify-content:center}
+ .areas.section-pad{padding-top:68px;padding-bottom:72px}
+ .area-item{grid-template-columns:28px 14px minmax(0,1fr) 16px;min-width:0}
+ .area-item>div:nth-of-type(2){min-width:0}
+}
