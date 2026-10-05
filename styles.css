@@ -430,3 +430,8 @@ html,body{overflow-x:clip}
 .answer-option input:focus-visible{outline:2px solid #8c6b1f;outline-offset:4px}
 .contact-input[aria-invalid="true"]{border-color:#9c382f;box-shadow:0 0 0 3px rgba(156,56,47,.1)}
 @media(max-width:680px){.hero-exclusive{margin:9px 0 0 33px;font-size:10px;letter-spacing:.1em}}
+
+
+/* Retrato de João Paulo */
+.portrait-image{display:block;width:100%;height:390px;object-fit:cover;object-position:center 42%;}
+@media(max-width:680px){.portrait-image{height:300px;object-position:center 42%;}}
