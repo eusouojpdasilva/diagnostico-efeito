@@ -240,3 +240,10 @@ body{font-family:var(--sans);font-size:16px;line-height:1.7;color:#171813}
  .hero-video-caption{font-size:8px;gap:8px;margin-top:11px;letter-spacing:.12em}
 }
 @media(prefers-reduced-motion:reduce){.hero-video{animation:none}}
+
+
+/* Real agency footage in the first operation story */
+.story-video{position:relative;aspect-ratio:1914/926;background:#141511;cursor:default}
+.story-video video{display:block;width:100%;height:100%;object-fit:cover}
+.story-video:hover{transform:translateY(-5px);box-shadow:0 32px 70px rgba(26,24,19,.12)}
+@media(max-width:680px){.story-video{aspect-ratio:1914/926}.story-video:hover{transform:none}}
