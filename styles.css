@@ -227,3 +227,16 @@ body{font-family:var(--sans);font-size:16px;line-height:1.7;color:#171813}
  .hero-brand-label .eyebrow-line{width:17px}
  .hero-brand-label .hero-exclusive{font-size:10px;padding:7px 8px;letter-spacing:.08em}
 }
+
+
+/* Hero video replaces the dashboard mockup */
+.hero-visual{min-height:0;display:flex;flex-direction:column;justify-content:center;align-items:stretch;perspective:none;transform:none}
+.hero-video{display:block;width:100%;height:auto;aspect-ratio:1914/926;object-fit:cover;border:1px solid rgba(239,215,131,.32);border-radius:4px;background:#0d0e0c;box-shadow:0 30px 90px rgba(0,0,0,.38),0 0 0 8px rgba(239,215,131,.035)}
+.hero-video-caption{display:flex;align-items:center;gap:10px;margin-top:14px;padding-left:2px;color:#c2bcae;font-size:9px;font-weight:650;letter-spacing:.16em}
+.hero-video-caption i{width:3px;height:3px;border-radius:50%;background:#d4b660}
+@media(max-width:680px){
+ .hero-visual{min-height:0;width:100%;margin:8px 0 0}
+ .hero-video{width:100%;aspect-ratio:1914/926;border-radius:3px;box-shadow:0 18px 46px rgba(0,0,0,.3),0 0 0 5px rgba(239,215,131,.035)}
+ .hero-video-caption{font-size:8px;gap:8px;margin-top:11px;letter-spacing:.12em}
+}
+@media(prefers-reduced-motion:reduce){.hero-video{animation:none}}
