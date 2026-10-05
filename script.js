@@ -8,24 +8,26 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const updateScrollState = () => {
-    header.classList.toggle('scrolled', window.scrollY > 16);
+    if (header) header.classList.toggle('scrolled', window.scrollY > 16);
     const distance = document.documentElement.scrollHeight - window.innerHeight;
-    progress.style.transform = `scaleX(${distance > 0 ? window.scrollY / distance : 0})`;
+    if (progress) progress.style.transform = `scaleX(${distance > 0 ? window.scrollY / distance : 0})`;
   };
   updateScrollState();
   window.addEventListener('scroll', updateScrollState, { passive: true });
 
-  menuButton.addEventListener('click', () => {
-    const open = menuButton.getAttribute('aria-expanded') !== 'true';
-    menuButton.setAttribute('aria-expanded', String(open));
-    menuButton.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
-    nav.classList.toggle('open', open);
-  });
-  nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
-    nav.classList.remove('open');
-    menuButton.setAttribute('aria-expanded', 'false');
-    menuButton.setAttribute('aria-label', 'Abrir menu');
-  }));
+  if (menuButton && nav) {
+    menuButton.addEventListener('click', () => {
+      const open = menuButton.getAttribute('aria-expanded') !== 'true';
+      menuButton.setAttribute('aria-expanded', String(open));
+      menuButton.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+      nav.classList.toggle('open', open);
+    });
+    nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+      nav.classList.remove('open');
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.setAttribute('aria-label', 'Abrir menu');
+    }));
+  }
 
   if ('IntersectionObserver' in window && !reducedMotion) {
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {
@@ -59,7 +61,8 @@
     });
   }
 
-  document.querySelector('.privacy-link').addEventListener('click', event => {
+  const privacyLink = document.querySelector('.privacy-link');
+  if (privacyLink && privacy) privacyLink.addEventListener('click', event => {
     event.preventDefault();
     privacy.showModal();
   });
@@ -68,6 +71,7 @@
     const box = privacy.getBoundingClientRect();
     if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) privacy.close();
   });
-  document.querySelector('#year').textContent = new Date().getFullYear();
+  const year = document.querySelector('#year');
+  if (year) year.textContent = new Date().getFullYear();
 })();
 
