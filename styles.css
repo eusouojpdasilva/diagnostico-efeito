@@ -440,3 +440,12 @@ html,body{overflow-x:clip}
 /* Rodapé sem links sociais: marca, responsável e crédito alinhados */
 .site-footer{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) auto;gap:24px;}
 @media(max-width:680px){.site-footer{grid-template-columns:minmax(0,1fr) auto;gap:14px 18px;}.footer-owner{text-align:right}.footer-copy{grid-column:1/-1;margin-top:2px;}}
+
+
+/* Rodapé mobile: blocos em coluna para leitura e alinhamento */
+@media(max-width:680px){
+  .site-footer{grid-template-columns:minmax(0,1fr);justify-items:start;align-items:start;gap:12px;padding:24px 23px;}
+  .site-footer .footer-brand,.site-footer .footer-owner,.site-footer .footer-copy{grid-column:1;justify-self:start;}
+  .site-footer .footer-owner{text-align:left;}
+  .site-footer .footer-copy{margin-top:0;}
+}
