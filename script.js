@@ -197,7 +197,7 @@
         'Onde minha operação mais trava: ' + answers.principal_gargalo,
         '',
         'Quero entender onde minha agência está perdendo oportunidades e o que faz sentido priorizar agora.'
-      ].join('\\n');
+      ].join('\n');
       const url = 'https://wa.me/5561981784728?' + new URLSearchParams({ text: message }).toString();
       fallback.href = url;
       diagnostic.querySelector('.diagnostic-steps').hidden = true;
