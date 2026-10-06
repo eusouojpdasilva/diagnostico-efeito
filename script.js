@@ -142,10 +142,12 @@
     });
 
     let leadTracked = false;
-    const sendWhatsApp = () => {
-      const popup = window.open(fallback.href, '_blank');
-      if (popup) popup.opener = null;
-    };
+    let autoRedirectTimer = null;
+    let countdownTimer = null;
+    fallback.addEventListener('click', () => {
+      if (autoRedirectTimer) window.clearTimeout(autoRedirectTimer);
+      if (countdownTimer) window.clearInterval(countdownTimer);
+    });
 
     diagnostic.addEventListener('submit', event => {
       event.preventDefault();
@@ -190,7 +192,17 @@
       diagnostic.querySelector('.form-error').hidden = true;
       confirmation.hidden = false;
       confirmation.focus({ preventScroll: true });
-      sendWhatsApp();
+      let secondsRemaining = 3;
+      const countdown = document.querySelector('#whatsapp-countdown');
+      countdown.textContent = String(secondsRemaining);
+      countdownTimer = window.setInterval(() => {
+        secondsRemaining -= 1;
+        if (secondsRemaining > 0) countdown.textContent = String(secondsRemaining);
+        else window.clearInterval(countdownTimer);
+      }, 1000);
+      autoRedirectTimer = window.setTimeout(() => {
+        window.location.assign(fallback.href);
+      }, 3000);
     });
 
   }
