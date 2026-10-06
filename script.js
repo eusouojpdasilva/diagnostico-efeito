@@ -178,15 +178,26 @@
         window.fbq('track', 'Lead');
         leadTracked = true;
       }
-      const message = '#Diagnóstico Efeito Reservas\\n\\n' +
-        'Olá, JP. Quero solicitar o Diagnóstico.\\n\\n' +
-        'Meu nome: ' + name + '\\nMeu WhatsApp: ' + phoneField.value + '\\n\\n' +
-        'Como estão as vendas da minha agência hoje:\\n' + answers.momento_vendas + '\\n\\n' +
-        'Hoje, qual parte do atendimento mais depende de mim:\\n' + answers.dependencia_atendimento + '\\n\\n' +
-        'Você trabalha sozinho ou tem equipe:\\n' + answers.estrutura_equipe + '\\n\\n' +
-        'Faturamento mensal aproximado da minha agência:\\n' + answers.faixa_faturamento + '\\n\\n' +
-        'Onde minha operação mais trava hoje:\\n' + answers.principal_gargalo + '\\n\\n' +
-        'Quero entender onde minha agência está perdendo oportunidades e o que faz sentido priorizar agora.';
+      const message = [
+        '#Diagnóstico Efeito Reservas',
+        '',
+        'Olá, JP! Quero solicitar o Diagnóstico.',
+        '',
+        '*Meus dados*',
+        'Nome: ' + name,
+        'WhatsApp: ' + phoneField.value,
+        '',
+        '*Sobre minha agência*',
+        'Vendas hoje: ' + answers.momento_vendas,
+        'Parte do atendimento que mais depende de mim: ' + answers.dependencia_atendimento,
+        'Equipe: ' + answers.estrutura_equipe,
+        'Faturamento mensal: ' + answers.faixa_faturamento,
+        '',
+        '*Principal desafio*',
+        'Onde minha operação mais trava: ' + answers.principal_gargalo,
+        '',
+        'Quero entender onde minha agência está perdendo oportunidades e o que faz sentido priorizar agora.'
+      ].join('\\n');
       const url = 'https://wa.me/5561981784728?' + new URLSearchParams({ text: message }).toString();
       fallback.href = url;
       diagnostic.querySelector('.diagnostic-steps').hidden = true;
