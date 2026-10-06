@@ -74,22 +74,23 @@
     const fallback = document.querySelector('#whatsapp-fallback');
     const phoneField = document.querySelector('#visitor-phone');
     const nameField = document.querySelector('#visitor-name');
-    const stepNames = ['Vendas', 'Origem dos clientes', 'Gargalo', 'Contato'];
+    const stepNames = ['Vendas', 'Atendimento', 'Equipe', 'Faturamento', 'Gargalo', 'Contato'];
     const answers = {};
     let currentStep = 1;
+    let autoRedirectTimer;
     const setStep = (next, shouldScroll = true) => {
-      currentStep = Math.max(1, Math.min(4, next));
+      currentStep = Math.max(1, Math.min(steps.length, next));
       steps.forEach((step, index) => {
         const active = index + 1 === currentStep;
         step.hidden = !active;
         step.classList.toggle('is-active', active);
       });
-      stepLabel.textContent = 'Etapa ' + currentStep + ' de 4';
+      stepLabel.textContent = 'Etapa ' + currentStep + ' de ' + steps.length;
       stepName.textContent = stepNames[currentStep - 1];
       progressTrack.setAttribute('aria-valuenow', String(currentStep));
-      progressFill.style.width = (currentStep * 25) + '%';
+      progressFill.style.width = (currentStep / steps.length * 100) + '%';
       backButton.hidden = currentStep === 1;
-      stepHint.textContent = currentStep < 4 ? 'Selecione uma opção para continuar' : 'Suas respostas serão abertas no WhatsApp';
+      stepHint.textContent = currentStep < steps.length ? 'Selecione uma opção para continuar' : 'Suas respostas serão abertas no WhatsApp';
       formError.textContent = '';
       if (shouldScroll) section.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
       const nextFocus = steps[currentStep - 1].querySelector('input[type="radio"]:checked') || steps[currentStep - 1].querySelector('input,button');
@@ -100,10 +101,10 @@
       input.addEventListener('change', () => {
         const key = input.name;
         answers[key] = input.value;
-        window.setTimeout(() => setStep(currentStep + 1), 140);
+        window.setTimeout(() => setStep(currentStep + 1, false), 140);
       });
     });
-    backButton.addEventListener('click', () => setStep(currentStep - 1));
+    backButton.addEventListener('click', () => setStep(currentStep - 1, false));
     diagnostic.querySelectorAll('.answer-list').forEach(list => {
       list.addEventListener('keydown', event => {
         if (!['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.key)) return;
@@ -141,12 +142,9 @@
       document.querySelector('#phone-error').textContent = '';
     });
 
-    let leadTracked = false;
-    let autoRedirectTimer = null;
-    let countdownTimer = null;
     fallback.addEventListener('click', () => {
-      if (autoRedirectTimer) window.clearTimeout(autoRedirectTimer);
-      if (countdownTimer) window.clearInterval(countdownTimer);
+      window.clearTimeout(autoRedirectTimer);
+      if (typeof window.fbq === 'function') window.fbq('track', 'Lead');
     });
 
     diagnostic.addEventListener('submit', event => {
@@ -154,10 +152,10 @@
       formError.textContent = '';
       const name = nameField.value.trim();
       const phoneDigits = phoneField.value.replace(/\D/g, '');
-      const requiredAnswers = ['momento_vendas', 'origem_clientes', 'principal_gargalo'];
+      const requiredAnswers = ['momento_vendas', 'dependencia_atendimento', 'estrutura_equipe', 'faixa_faturamento', 'principal_gargalo'];
       if (!requiredAnswers.every(key => answers[key])) {
-        formError.textContent = 'Responda às três perguntas para continuar.';
-        setStep(requiredAnswers.findIndex(key => !answers[key]) + 1);
+        formError.textContent = 'Responda às cinco perguntas para continuar.';
+        setStep(requiredAnswers.findIndex(key => !answers[key]) + 1, false);
         return;
       }
       if (!name) {
@@ -174,16 +172,14 @@
         return;
       }
       phoneField.removeAttribute('aria-invalid');
-      if (!leadTracked && typeof window.fbq === 'function') {
-        window.fbq('track', 'Lead');
-        leadTracked = true;
-      }
       const message = '#Diagnóstico Efeito Reservas\n\n' +
         'Olá, JP. Quero solicitar o Diagnóstico.\n\n' +
         'Meu nome: ' + name + '\nMeu WhatsApp: ' + phoneField.value + '\n\n' +
-        'Como estão minhas vendas hoje:\n' + answers.momento_vendas + '\n\n' +
-        'Principal origem dos meus clientes:\n' + answers.origem_clientes + '\n\n' +
-        'Onde minha operação mais trava:\n' + answers.principal_gargalo + '\n\n' +
+        'Como estão as vendas da minha agência hoje:\n' + answers.momento_vendas + '\n\n' +
+        'Hoje, qual parte do atendimento mais depende de mim:\n' + answers.dependencia_atendimento + '\n\n' +
+        'Você trabalha sozinho ou tem equipe:\n' + answers.estrutura_equipe + '\n\n' +
+        'Faturamento mensal aproximado da minha agência:\n' + answers.faixa_faturamento + '\n\n' +
+        'Onde minha operação mais trava hoje:\n' + answers.principal_gargalo + '\n\n' +
         'Quero entender onde minha agência está perdendo oportunidades e o que faz sentido priorizar agora.';
       const url = 'https://wa.me/5561981784728?' + new URLSearchParams({ text: message }).toString();
       fallback.href = url;
@@ -193,19 +189,8 @@
       diagnostic.querySelector('.form-error').hidden = true;
       confirmation.hidden = false;
       confirmation.focus({ preventScroll: true });
-      let secondsRemaining = 3;
-      const countdown = document.querySelector('#whatsapp-countdown');
-      countdown.textContent = String(secondsRemaining);
-      countdownTimer = window.setInterval(() => {
-        secondsRemaining -= 1;
-        if (secondsRemaining > 0) countdown.textContent = String(secondsRemaining);
-        else window.clearInterval(countdownTimer);
-      }, 1000);
-      autoRedirectTimer = window.setTimeout(() => {
-        window.location.assign(fallback.href);
-      }, 3000);
+      autoRedirectTimer = window.setTimeout(() => window.location.assign(fallback.href), 3000);
     });
-
   }
   document.querySelector('.privacy-link').addEventListener('click', event => {
     event.preventDefault();
@@ -218,4 +203,3 @@
   });
   document.querySelector('#year').textContent = new Date().getFullYear();
 })();
-
