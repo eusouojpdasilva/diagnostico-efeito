@@ -77,7 +77,6 @@
     const stepNames = ['Vendas', 'Atendimento', 'Equipe', 'Faturamento', 'Gargalo', 'Contato'];
     const answers = {};
     let currentStep = 1;
-    let autoRedirectTimer;
     const setStep = (next, shouldScroll = true) => {
       currentStep = Math.max(1, Math.min(steps.length, next));
       steps.forEach((step, index) => {
@@ -142,9 +141,12 @@
       document.querySelector('#phone-error').textContent = '';
     });
 
+    let leadTracked = false;
+    let autoRedirectTimer = null;
+    let countdownTimer = null;
     fallback.addEventListener('click', () => {
-      window.clearTimeout(autoRedirectTimer);
-      if (typeof window.fbq === 'function') window.fbq('track', 'Lead');
+      if (autoRedirectTimer) window.clearTimeout(autoRedirectTimer);
+      if (countdownTimer) window.clearInterval(countdownTimer);
     });
 
     diagnostic.addEventListener('submit', event => {
@@ -172,14 +174,18 @@
         return;
       }
       phoneField.removeAttribute('aria-invalid');
-      const message = '#Diagnóstico Efeito Reservas\n\n' +
-        'Olá, JP. Quero solicitar o Diagnóstico.\n\n' +
-        'Meu nome: ' + name + '\nMeu WhatsApp: ' + phoneField.value + '\n\n' +
-        'Como estão as vendas da minha agência hoje:\n' + answers.momento_vendas + '\n\n' +
-        'Hoje, qual parte do atendimento mais depende de mim:\n' + answers.dependencia_atendimento + '\n\n' +
-        'Você trabalha sozinho ou tem equipe:\n' + answers.estrutura_equipe + '\n\n' +
-        'Faturamento mensal aproximado da minha agência:\n' + answers.faixa_faturamento + '\n\n' +
-        'Onde minha operação mais trava hoje:\n' + answers.principal_gargalo + '\n\n' +
+      if (!leadTracked && typeof window.fbq === 'function') {
+        window.fbq('track', 'Lead');
+        leadTracked = true;
+      }
+      const message = '#Diagnóstico Efeito Reservas\\n\\n' +
+        'Olá, JP. Quero solicitar o Diagnóstico.\\n\\n' +
+        'Meu nome: ' + name + '\\nMeu WhatsApp: ' + phoneField.value + '\\n\\n' +
+        'Como estão as vendas da minha agência hoje:\\n' + answers.momento_vendas + '\\n\\n' +
+        'Hoje, qual parte do atendimento mais depende de mim:\\n' + answers.dependencia_atendimento + '\\n\\n' +
+        'Você trabalha sozinho ou tem equipe:\\n' + answers.estrutura_equipe + '\\n\\n' +
+        'Faturamento mensal aproximado da minha agência:\\n' + answers.faixa_faturamento + '\\n\\n' +
+        'Onde minha operação mais trava hoje:\\n' + answers.principal_gargalo + '\\n\\n' +
         'Quero entender onde minha agência está perdendo oportunidades e o que faz sentido priorizar agora.';
       const url = 'https://wa.me/5561981784728?' + new URLSearchParams({ text: message }).toString();
       fallback.href = url;
@@ -189,8 +195,19 @@
       diagnostic.querySelector('.form-error').hidden = true;
       confirmation.hidden = false;
       confirmation.focus({ preventScroll: true });
-      autoRedirectTimer = window.setTimeout(() => window.location.assign(fallback.href), 3000);
+      let secondsRemaining = 3;
+      const countdown = document.querySelector('#whatsapp-countdown');
+      countdown.textContent = String(secondsRemaining);
+      countdownTimer = window.setInterval(() => {
+        secondsRemaining -= 1;
+        if (secondsRemaining > 0) countdown.textContent = String(secondsRemaining);
+        else window.clearInterval(countdownTimer);
+      }, 1000);
+      autoRedirectTimer = window.setTimeout(() => {
+        window.location.assign(fallback.href);
+      }, 3000);
     });
+
   }
   document.querySelector('.privacy-link').addEventListener('click', event => {
     event.preventDefault();
@@ -203,3 +220,4 @@
   });
   document.querySelector('#year').textContent = new Date().getFullYear();
 })();
+
