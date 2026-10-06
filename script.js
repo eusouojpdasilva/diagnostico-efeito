@@ -178,7 +178,8 @@
         window.fbq('track', 'Lead');
         leadTracked = true;
       }
-      const message = 'Olá, JP. Quero solicitar o Diagnóstico Efeito Reservas.\n\n' +
+      const message = '#Diagnóstico Efeito Reservas\n\n' +
+        'Olá, JP. Quero solicitar o Diagnóstico.\n\n' +
         'Meu nome: ' + name + '\nMeu WhatsApp: ' + phoneField.value + '\n\n' +
         'Como estão minhas vendas hoje:\n' + answers.momento_vendas + '\n\n' +
         'Principal origem dos meus clientes:\n' + answers.origem_clientes + '\n\n' +
